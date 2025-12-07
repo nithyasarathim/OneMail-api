@@ -15,4 +15,4 @@ const config = {
     ratelimitwindow: process.env.RATE_LIMIT_WINDOW,
 };
 
-module.exports = config;
+export default config;
