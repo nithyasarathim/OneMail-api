@@ -7,8 +7,8 @@ const config = {
     mail: {
         host: process.env.MAIL_HOST,
         port: Number(process.env.MAIL_PORT),
-        pass: process.env.MAIL_PASS,
         user: process.env.MAIL_USER,
+        pass: process.env.MAIL_PASS,
     },
     signaturesecret: process.env.SIGNATURE_SECRET,
     ratelimit: process.env.RATE_LIMIT,
