@@ -3,7 +3,6 @@ dotenv.config();
 
 const config = {
     port: process.env.PORT,
-    allowedOrigins: process.env.ALLOWED_ORIGINS?.split(',')||[],
     mail: {
         host: process.env.MAIL_HOST,
         port: Number(process.env.MAIL_PORT),
