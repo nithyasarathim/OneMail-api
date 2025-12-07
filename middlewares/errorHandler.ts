@@ -1,5 +1,5 @@
-import type{ Request, Response, NextFunction } from "express";
-const { APIError } = require("../utils/APIError");
+import type { Request, Response, NextFunction } from "express";
+import APIError from '../utils/APIError.js';
 
 const errorHandler = function (
   err: any,
@@ -20,4 +20,4 @@ const errorHandler = function (
   });
 };
 
-module.exports = errorHandler;
+export default errorHandler;
