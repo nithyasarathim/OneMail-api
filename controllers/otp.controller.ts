@@ -12,7 +12,7 @@ const sendRegisterOtp = async function (
     try {
         const { to, otp } = req.body;
         const html = signInOtpTemplate(otp);
-        const info = await transporter.sendMail({
+        await transporter.sendMail({
             from: `"OneAuth Registration" <${config.mail.user}>`,
             to,
             subject: "OneAccounts Registration One Time Password",
