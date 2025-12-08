@@ -13,7 +13,7 @@
         legacyHeaders: false,
         keyGenerator: (req: Request) => req.ip!,
         handler: (req, res, next) => {
-            next(new APIError("Too many requests", 429));
+            throw new APIError("Too many requests", 429);
         },
     });
 

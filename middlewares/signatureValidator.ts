@@ -38,19 +38,19 @@
         const now = Date.now();
         const age = now - numTimeStamp;
         if (Number.isNaN(cleaned_timestamp) || numTimeStamp <= 0 || cleaned_timestamp!=numTimeStamp.toString()) {
-            throw new APIError("Invalid timestamp format", 400);
+            return next( new APIError("Invalid timestamp format", 400));
         }
         if (age < 0) {
-            throw new APIError("Timestamp from future", 400);
+            return next(new APIError("Timestamp from future", 400));
         }
         if (age > MAX_AGE_MS) {
-            throw new APIError("Request Expired", 410);
+            return next(new APIError("Request Expired", 410));
         }
 
         const expected_signature = signatureGenerator(cleaned_to, cleaned_otp, cleaned_timestamp);
 
         if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected_signature))) {
-            throw new APIError("Invalid signature", 401);
+            return next(new APIError("Invalid signature", 401));
         }
 
         req.body.data = {
