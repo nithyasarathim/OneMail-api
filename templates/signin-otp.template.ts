@@ -47,4 +47,4 @@ function signInOtpTemplate(otp: string) {
 `;
 }
 
-module.exports = signInOtpTemplate;
+export default signInOtpTemplate;
