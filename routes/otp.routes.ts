@@ -1,10 +1,8 @@
 import { Router } from "express";
 import sendRegisterOtp from "../controllers/otp.controller.js";
-import signatureValidator from "../middlewares/signatureValidator.js";
-import rateLimiter from "../middlewares/rateLimiter.js";
 
-const router = Router();
+const OTPRouter = Router();
 
-router.post("/register/send", rateLimiter, signatureValidator, sendRegisterOtp);
+OTPRouter.post("/mail/register",sendRegisterOtp);
 
-export default router;
+export default OTPRouter;
