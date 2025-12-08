@@ -14,7 +14,7 @@ function signInOtpTemplate(otp: string) {
   </style>
 </head>
 
-<body style="margin:10px; padding:60px 0; background-color:#0ea5e9; font-family:'Segoe UI', Arial, sans-serif;">
+<body style="margin:5px; padding:60px 0; background-color:#0ea5e9; font-family:'Segoe UI', Arial, sans-serif;">
   <div style="
     max-width:520px;
     margin:0 auto;

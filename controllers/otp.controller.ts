@@ -21,7 +21,7 @@ const sendRegisterOtp = async function (
         return res.status(200).json({ message: "Mail sent successfully", success: true });
     } catch (err) {
         console.log(err);
-        next(new APIError("Failed to send OTP", 500));
+        return next(new APIError("Failed to send OTP", 500));
     }
 };
 
