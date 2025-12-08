@@ -1,4 +1,4 @@
-    import rateLimit from 'express-rate-limit';
+    import rateLimit, { ipKeyGenerator } from 'express-rate-limit';
     import config from '../config/env.js';
     import type { Request } from 'express';
     import APIError from "../utils/APIError.js";
@@ -11,7 +11,7 @@
         max: MAX_REQUESTS,
         standardHeaders: true,
         legacyHeaders: false,
-        keyGenerator: (req: Request) => req.ip!,
+        keyGenerator: ipKeyGenerator as any,
         handler: (req, res, next) => {
             throw new APIError("Too many requests", 429);
         },
