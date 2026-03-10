@@ -2,15 +2,18 @@ import type { Request, Response, NextFunction } from "express";
 import APIError from "../utils/APIError.js";
 import crypto from "crypto";
 import signatureGenerator from "../utils/signatureGenerator.js";
+import config from "../config/env.js";
 
-const MAX_AGE_MS = 2 * 60 * 1000;
+const isProduction = config.environment === "production";
+const MAX_AGE_MS = isProduction ? 2 * 60 * 1000 : 10 * 60 * 1000;
 
 const signatureValidator = function (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   const { to, otp, timestamp, signature } = req.body;
+
   if (!to || !otp || !timestamp || !signature) {
     throw new APIError("Missing required fields", 400);
   }
@@ -31,21 +34,23 @@ const signatureValidator = function (
   const cleaned_to = to.trim().toLowerCase();
   const cleaned_otp = String(otp).trim();
   const cleaned_timestamp = String(timestamp).trim();
-
   const numTimeStamp = Number(cleaned_timestamp);
 
   const now = Date.now();
   const age = now - numTimeStamp;
+
   if (
-    Number.isNaN(cleaned_timestamp) ||
+    Number.isNaN(numTimeStamp) ||
     numTimeStamp <= 0 ||
-    cleaned_timestamp != numTimeStamp.toString()
+    cleaned_timestamp !== numTimeStamp.toString()
   ) {
     return next(new APIError("Invalid timestamp format", 400));
   }
+
   if (age < 0) {
     return next(new APIError("Timestamp from future", 400));
   }
+
   if (age > MAX_AGE_MS) {
     return next(new APIError("Request Expired", 410));
   }
@@ -53,14 +58,15 @@ const signatureValidator = function (
   const expected_signature = signatureGenerator(
     cleaned_to,
     cleaned_otp,
-    cleaned_timestamp
+    cleaned_timestamp,
   );
 
+  const signatureBuffer = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expected_signature);
+
   if (
-    !crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expected_signature)
-    )
+    signatureBuffer.length !== expectedBuffer.length ||
+    !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)
   ) {
     return next(new APIError("Invalid signature", 401));
   }
