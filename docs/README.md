@@ -1,57 +1,4 @@
-<!-- OneMail Documentation -->
-
-<div style="background:white;padding:40px;font-family:'Nunito Sans',sans-serif;color:black;line-height:1.7">
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Nunito+Sans:wght@300;400;500;600&display=swap');
-
-h1,h2,h3,h4{
-font-family:'Poppins',sans-serif;
-color:#0ea5e9;
-margin-top:32px;
-margin-bottom:12px;
-}
-
-blockquote{
-background:#f8fafc;
-border-left:4px solid #0ea5e9;
-padding:12px 18px;
-border-radius:6px;
-font-style:italic;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin:18px 0;
-}
-
-th,td{
-border:1px solid #e5e7eb;
-padding:10px 12px;
-text-align:left;
-}
-
-th{
-background:#f1f5f9;
-font-weight:600;
-}
-
-code{
-background:#f3f4f6;
-padding:2px 6px;
-border-radius:4px;
-}
-
-pre{
-background:#0f172a;
-color:#e2e8f0;
-padding:16px;
-border-radius:8px;
-overflow:auto;
-}
-
-</style>
+# OneMail Documentation
 
 <div align="center">
 
@@ -61,14 +8,14 @@ overflow:auto;
 
 OTP Email Delivery Microservice for the **OneAuth Ecosystem**
 
-Version **1.0.0**
+Version **1.0.0**  
 Last Updated — **March 10, 2026**
 
 </div>
 
 ---
 
-# <ins>Table of Contents</ins>
+## Table of Contents
 
 1. [Service Overview](#service-overview)
 2. [Architecture & Integration](#architecture--integration)
@@ -85,7 +32,7 @@ Last Updated — **March 10, 2026**
 
 ---
 
-# <ins>Service Overview</ins>
+## Service Overview
 
 > **Purpose**
 
@@ -103,9 +50,7 @@ Separating email delivery into its own microservice improves:
 - Scalability
 - Code clarity
 
----
-
-## Key Goals
+### Key Goals
 
 | Goal        | Description                               |
 | ----------- | ----------------------------------------- |
@@ -116,7 +61,7 @@ Separating email delivery into its own microservice improves:
 
 ---
 
-# <ins>Architecture & Integration</ins>
+## Architecture & Integration
 
 > **High Level Request Flow**
 
@@ -144,13 +89,11 @@ User Inbox
        │ 10. OneAuth verifies OTP
 ```
 
----
-
-## Detailed Architecture Overview
+### Detailed Architecture Overview
 
 OneMail is designed as a **stateless microservice** following the **single responsibility principle**. It focuses exclusively on secure OTP email delivery, separating concerns from the main authentication service (OneAuth).
 
-### Core Components
+#### Core Components
 
 | Component       | Technology | Responsibility                        |
 | --------------- | ---------- | ------------------------------------- |
@@ -161,7 +104,7 @@ OneMail is designed as a **stateless microservice** following the **single respo
 | **Middlewares** | Express    | Security, logging, rate limiting      |
 | **Utils**       | TypeScript | Signature generation, logging, errors |
 
-### Request Processing Pipeline
+#### Request Processing Pipeline
 
 1. **HTTP Request Reception**
    - Express server receives POST request
@@ -191,16 +134,14 @@ OneMail is designed as a **stateless microservice** following the **single respo
    - Returns success/error JSON
    - Logs final status
 
-### Stateless Design Benefits
+#### Stateless Design Benefits
 
 - **Horizontal Scaling**: No session state to manage
 - **Fault Tolerance**: Service can restart without data loss
 - **Simplicity**: No database or caching required
 - **Performance**: Fast response times (typically <1s)
 
----
-
-## Integration Points
+### Integration Points
 
 | Direction      | Service        | Protocol    | Purpose                     | Data Flow         |
 | -------------- | -------------- | ----------- | --------------------------- | ----------------- |
@@ -208,7 +149,7 @@ OneMail is designed as a **stateless microservice** following the **single respo
 | **Downstream** | SMTP Provider  | SMTP / TLS  | Email delivery              | Email with OTP    |
 | **Monitoring** | Logging system | JSON logs   | Debugging and observability | Structured logs   |
 
-### Upstream Integration (OneAuth)
+#### Upstream Integration (OneAuth)
 
 OneAuth integrates with OneMail by:
 
@@ -252,7 +193,7 @@ const sendOtpEmail = async (email: string, otp: string) => {
 };
 ```
 
-### Downstream Integration (SMTP Providers)
+#### Downstream Integration (SMTP Providers)
 
 OneMail integrates with email providers via SMTP:
 
@@ -268,9 +209,7 @@ OneMail integrates with email providers via SMTP:
 - Amazon SES
 - Custom SMTP servers
 
----
-
-## Data Flow & Security Boundaries
+### Data Flow & Security Boundaries
 
 ```
 ┌─────────────────┐    Signed Request    ┌─────────────────┐    Email    ┌─────────────────┐
@@ -289,9 +228,7 @@ OneMail integrates with email providers via SMTP:
 - Shared secret only for request signing
 - No user data persistence in OneMail
 
----
-
-## Error Handling & Resilience
+### Error Handling & Resilience
 
 - **Fail-Fast**: Invalid requests rejected immediately
 - **Graceful Degradation**: SMTP failures logged but don't crash service
@@ -302,7 +239,7 @@ OneMail integrates with email providers via SMTP:
 
 ---
 
-# <ins>Tech Stack</ins>
+## Tech Stack
 
 | Layer         | Technology         | Version  | Purpose            |
 | ------------- | ------------------ | -------- | ------------------ |
@@ -317,9 +254,9 @@ OneMail integrates with email providers via SMTP:
 
 ---
 
-# <ins>Responsibilities & Boundaries</ins>
+## Responsibilities & Boundaries
 
-## What OneMail Handles
+### What OneMail Handles
 
 | Feature                | Description                  |
 | ---------------------- | ---------------------------- |
@@ -330,9 +267,7 @@ OneMail integrates with email providers via SMTP:
 | Email sending          | Sends via SMTP               |
 | Logging                | Tracks delivery results      |
 
----
-
-## What OneMail Does NOT Handle
+### What OneMail Does NOT Handle
 
 | Feature          | Reason                     |
 | ---------------- | -------------------------- |
@@ -344,7 +279,7 @@ OneMail integrates with email providers via SMTP:
 
 ---
 
-# <ins>API Reference</ins>
+## API Reference
 
 > **Base URL**
 
@@ -360,18 +295,14 @@ Production
 https://onemail.yourdomain.com/otp
 ```
 
----
-
-## Endpoints
+### Endpoints
 
 | Method | Endpoint                | Description             | Rate Limit |
 | ------ | ----------------------- | ----------------------- | ---------- |
 | POST   | `/mail/register`        | Send registration OTP   | 10/min     |
 | POST   | `/mail/forget-password` | Send password reset OTP | 10/min     |
 
----
-
-## Request Format
+### Request Format
 
 All requests must include the following JSON payload:
 
@@ -384,7 +315,7 @@ All requests must include the following JSON payload:
 }
 ```
 
-### Field Descriptions
+#### Field Descriptions
 
 | Field       | Type   | Required | Description                    | Validation Rules                       |
 | ----------- | ------ | -------- | ------------------------------ | -------------------------------------- |
@@ -393,11 +324,9 @@ All requests must include the following JSON payload:
 | `timestamp` | string | Yes      | Unix timestamp in milliseconds | Numeric string, within valid age       |
 | `signature` | string | Yes      | HMAC SHA256 signature          | Hex string, matches expected           |
 
----
+### Example Requests
 
-## Example Requests
-
-### Registration OTP
+#### Registration OTP
 
 **Endpoint:** `POST /otp/mail/register`
 
@@ -450,9 +379,7 @@ fetch("http://localhost:5002/otp/mail/register", {
 });
 ```
 
----
-
-### Password Reset OTP
+#### Password Reset OTP
 
 **Endpoint:** `POST /otp/mail/forget-password`
 
@@ -505,9 +432,7 @@ fetch("http://localhost:5002/otp/mail/forget-password", {
 });
 ```
 
----
-
-## Success Response
+### Success Response
 
 ```json
 {
@@ -516,11 +441,9 @@ fetch("http://localhost:5002/otp/mail/forget-password", {
 }
 ```
 
----
+### Error Responses
 
-## Error Responses
-
-### Validation Errors
+#### Validation Errors
 
 **Status: 400**
 
@@ -558,7 +481,7 @@ fetch("http://localhost:5002/otp/mail/forget-password", {
 }
 ```
 
-### Rate Limiting
+#### Rate Limiting
 
 **Status: 429**
 
@@ -569,7 +492,7 @@ fetch("http://localhost:5002/otp/mail/forget-password", {
 }
 ```
 
-### Server Errors
+#### Server Errors
 
 **Status: 500**
 
@@ -580,9 +503,7 @@ fetch("http://localhost:5002/otp/mail/forget-password", {
 }
 ```
 
----
-
-## Status Codes
+### Status Codes
 
 | Code | Meaning               | Description                 |
 | ---- | --------------------- | --------------------------- |
@@ -595,26 +516,24 @@ fetch("http://localhost:5002/otp/mail/forget-password", {
 
 ---
 
-# <ins>Security & Authentication</ins>
+## Security & Authentication
 
 OneMail implements multiple layers of security to ensure secure OTP email delivery. The primary security mechanism is **HMAC SHA256 request signing** combined with **timestamp freshness validation** and **rate limiting**.
 
 > **Note:** While the signature validation logic is implemented in the codebase (`middlewares/signatureValidator.ts`), it is currently not applied to the routes. This is a security gap that should be addressed in production deployments.
 
----
-
-## HMAC SHA256 Request Signing
+### HMAC SHA256 Request Signing
 
 Every API request must be cryptographically signed to prevent unauthorized access and request tampering.
 
-### How It Works
+#### How It Works
 
 1. **Payload Construction**: Create a string from the request fields in the format `to:otp:timestamp`
 2. **HMAC Generation**: Use SHA256 HMAC with a shared secret key
 3. **Signature Inclusion**: Include the hex-encoded signature in the request
 4. **Server Verification**: OneMail verifies the signature using the same algorithm
 
-### Signature Algorithm Details
+#### Signature Algorithm Details
 
 **Input Format:**
 
@@ -646,13 +565,11 @@ const signature = crypto
 - **Authenticity**: Proves request comes from authorized source
 - **Non-repudiation**: Sender cannot deny sending the request
 
----
-
-## Timestamp Freshness Validation
+### Timestamp Freshness Validation
 
 Requests include a timestamp to prevent replay attacks and ensure timeliness.
 
-### Validation Rules
+#### Validation Rules
 
 | Check      | Description            | Development | Production  |
 | ---------- | ---------------------- | ----------- | ----------- |
@@ -660,7 +577,7 @@ Requests include a timestamp to prevent replay attacks and ensure timeliness.
 | **Future** | Cannot be from future  | Not allowed | Not allowed |
 | **Age**    | Maximum allowed age    | 10 minutes  | 2 minutes   |
 
-### Why Timestamp Validation?
+#### Why Timestamp Validation?
 
 - **Replay Attack Prevention**: Old signed requests cannot be reused
 - **Clock Skew Handling**: Accounts for minor time differences between servers
@@ -685,20 +602,18 @@ if (age < 0) {
 }
 ```
 
----
-
-## Rate Limiting
+### Rate Limiting
 
 Prevents abuse and ensures fair resource usage.
 
-### Configuration
+#### Configuration
 
 | Environment | Requests/Minute | Window (ms) | IP Detection    |
 | ----------- | --------------- | ----------- | --------------- |
 | Development | 10              | 60000       | Local IP        |
 | Production  | 100             | 60000       | X-Forwarded-For |
 
-### Rate Limit Algorithm
+#### Rate Limit Algorithm
 
 - **Token Bucket**: Allows bursts up to the limit
 - **Sliding Window**: Resets every minute
@@ -713,13 +628,11 @@ X-RateLimit-Remaining: 99
 X-RateLimit-Reset: 1704067260000
 ```
 
----
-
-## Input Validation & Sanitization
+### Input Validation & Sanitization
 
 All inputs are validated and sanitized to prevent injection attacks.
 
-### Validation Rules
+#### Validation Rules
 
 | Field       | Type   | Sanitization    | Validation            |
 | ----------- | ------ | --------------- | --------------------- |
@@ -728,45 +641,41 @@ All inputs are validated and sanitized to prevent injection attacks.
 | `timestamp` | string | Trim            | Numeric, within range |
 | `signature` | string | N/A             | 64-char hex string    |
 
-### Security Checks
+#### Security Checks
 
 - **Type Validation**: Ensures correct data types
 - **Length Limits**: Prevents buffer overflow
 - **Regex Validation**: Email format checking
 - **Trimming**: Removes leading/trailing whitespace
 
----
-
-## TLS & Transport Security
+### TLS & Transport Security
 
 All communications are encrypted in transit.
 
-### SMTP Security
+#### SMTP Security
 
 - **TLS Required**: Production mode enforces TLS
 - **Certificate Validation**: Verifies server certificates
 - **STARTTLS**: Upgrades plain connections to encrypted
 
-### HTTP Security
+#### HTTP Security
 
 - **HTTPS Recommended**: Use reverse proxy for SSL termination
 - **Trust Proxy**: Configures Express for proxy headers
 - **Secure Headers**: Rate limit headers for debugging
 
----
-
-## Shared Secret Management
+### Shared Secret Management
 
 The `SIGNATURE_SECRET` is the cornerstone of request authentication.
 
-### Security Requirements
+#### Security Requirements
 
 | Environment | Secret Source | Validation       |
 | ----------- | ------------- | ---------------- |
 | Development | `.env` file   | Warns if default |
 | Production  | Environment   | Required, strong |
 
-### Best Practices
+#### Best Practices
 
 - **Rotation**: Change every 90 days
 - **Storage**: Never in code repository
@@ -783,11 +692,9 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 export SIGNATURE_SECRET="your-32-char-hex-secret"
 ```
 
----
+### Threat Model & Mitigations
 
-## Threat Model & Mitigations
-
-### Potential Threats
+#### Potential Threats
 
 | Threat                | Mitigation                      |
 | --------------------- | ------------------------------- |
@@ -798,27 +705,25 @@ export SIGNATURE_SECRET="your-32-char-hex-secret"
 | **Man-in-the-Middle** | TLS encryption                  |
 | **Secret Leakage**    | Environment isolation, rotation |
 
-### Attack Scenarios
+#### Attack Scenarios
 
 1. **Stolen Request**: Old requests rejected by timestamp check
 2. **Modified Payload**: Signature mismatch detected
 3. **Flooding**: Rate limiter blocks excessive requests
 4. **Invalid Data**: Input validation rejects malformed requests
 
----
-
-## Security Monitoring
+### Security Monitoring
 
 Security events are logged for monitoring and alerting.
 
-### Logged Events
+#### Logged Events
 
 - Rate limit violations
 - Signature validation failures
 - Timestamp validation errors
 - Input validation failures
 
-### Log Example
+#### Log Example
 
 ```json
 {
@@ -831,9 +736,7 @@ Security events are logged for monitoring and alerting.
 }
 ```
 
----
-
-## Additional Security Measures
+### Additional Security Measures
 
 - Timestamp freshness validation
 - Rate limiting per IP
@@ -842,7 +745,7 @@ Security events are logged for monitoring and alerting.
 
 ---
 
-# <ins>Environment Variables</ins>
+## Environment Variables
 
 | Variable          | Example                                   | Required | Description   |
 | ----------------- | ----------------------------------------- | -------- | ------------- |
@@ -858,9 +761,9 @@ Security events are logged for monitoring and alerting.
 
 ---
 
-# <ins>Setup & Deployment</ins>
+## Setup & Deployment
 
-## Local Development
+### Local Development
 
 ```bash
 git clone <repo>
@@ -874,18 +777,14 @@ cp .env.example .env
 npm run dev
 ```
 
----
-
-## Production Build
+### Production Build
 
 ```bash
 npm run build
 npm start
 ```
 
----
-
-## Docker Deployment
+### Docker Deployment
 
 ```bash
 docker build -t onemail:latest .
@@ -898,7 +797,7 @@ onemail:latest
 
 ---
 
-# <ins>Configuration & Modes</ins>
+## Configuration & Modes
 
 | Setting          | Development | Production  |
 | ---------------- | ----------- | ----------- |
@@ -910,7 +809,7 @@ onemail:latest
 
 ---
 
-# <ins>Logging & Observability</ins>
+## Logging & Observability
 
 > Logging uses **Winston structured JSON logs**
 
@@ -927,9 +826,7 @@ Example log entry:
 }
 ```
 
----
-
-## Recommended Monitoring Tools
+### Recommended Monitoring Tools
 
 | Tool       | Purpose          |
 | ---------- | ---------------- |
@@ -940,7 +837,7 @@ Example log entry:
 
 ---
 
-# <ins>Error Handling</ins>
+## Error Handling
 
 > OneMail follows **fail-fast error handling**
 
@@ -954,7 +851,7 @@ Example log entry:
 
 ---
 
-# <ins>Best Practices & Recommendations</ins>
+## Best Practices & Recommendations
 
 - Rotate `SIGNATURE_SECRET` every **90 days**
 - Use dedicated email services like **SendGrid / SES**
@@ -965,7 +862,7 @@ Example log entry:
 
 ---
 
-# <ins>Support</ins>
+## Support
 
 If problems occur:
 
@@ -976,11 +873,6 @@ If problems occur:
 
 ---
 
-# <ins>License</ins>
+## License
 
 MIT License
-
----
-
-
-</div>
