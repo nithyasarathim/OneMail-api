@@ -55,10 +55,11 @@ overflow:auto;
 
 <div align="center">
 
-<img src="assets/logo.png" width="full"/>
+<img src="../assets/logo.png" width="600"/>
 
-> **Secure • Reliable • Minimal**<br>
-> OTP Email Delivery Microservice for the **OneAuth Ecosystem**
+### **Secure • Reliable • Minimal**<br>
+
+OTP Email Delivery Microservice for the **OneAuth Ecosystem**
 
 Version **1.0.0**
 Last Updated — **March 10, 2026**
@@ -67,7 +68,7 @@ Last Updated — **March 10, 2026**
 
 ---
 
-# Table of Contents
+# <ins>Table of Contents</ins>
 
 1. [Service Overview](#service-overview)
 2. [Architecture & Integration](#architecture--integration)
@@ -84,7 +85,7 @@ Last Updated — **March 10, 2026**
 
 ---
 
-# Service Overview
+# <ins>Service Overview</ins>
 
 > **Purpose**
 
@@ -115,38 +116,193 @@ Separating email delivery into its own microservice improves:
 
 ---
 
-# Architecture & Integration
+# <ins>Architecture & Integration</ins>
 
 > **High Level Request Flow**
 
 ```
-OneAuth Service
+OneAuth Service (Upstream)
        │
-       │ HMAC Signed Request
+       │ 1. User initiates registration/login
+       │ 2. OneAuth generates OTP
+       │ 3. OneAuth prepares signed request
        ▼
-    OneMail
+    OneMail Microservice
        │
-       │ SMTP
+       │ 4. Validate request signature & timestamp
+       │ 5. Rate limit check
+       │ 6. Render email template with OTP
+       │ 7. Send email via SMTP
        ▼
 Email Provider (Gmail / SendGrid / SES)
+       │
+       │ 8. Deliver email to user
+       ▼
+User Inbox
+       │
+       │ 9. User enters OTP in OneAuth
+       │ 10. OneAuth verifies OTP
 ```
+
+---
+
+## Detailed Architecture Overview
+
+OneMail is designed as a **stateless microservice** following the **single responsibility principle**. It focuses exclusively on secure OTP email delivery, separating concerns from the main authentication service (OneAuth).
+
+### Core Components
+
+| Component       | Technology | Responsibility                        |
+| --------------- | ---------- | ------------------------------------- |
+| **Express App** | Express.js | HTTP server, routing, middleware      |
+| **Controllers** | TypeScript | Business logic for OTP sending        |
+| **Templates**   | HTML/TS    | Email content rendering               |
+| **Mailer**      | Nodemailer | SMTP communication                    |
+| **Middlewares** | Express    | Security, logging, rate limiting      |
+| **Utils**       | TypeScript | Signature generation, logging, errors |
+
+### Request Processing Pipeline
+
+1. **HTTP Request Reception**
+   - Express server receives POST request
+   - JSON body parsing with size limits (10kb prod / 1mb dev)
+
+2. **Middleware Execution** (in order)
+   - `requestLogger`: Logs incoming requests with timing
+   - `rateLimiter`: Prevents abuse (10/min dev, 100/min prod)
+   - `signatureValidator`: Verifies HMAC signature and timestamp freshness _(Note: Currently not applied in routes)_
+
+3. **Route Handling**
+   - Routes to appropriate controller based on endpoint
+   - `/otp/mail/register` → `sendRegisterOtp`
+   - `/otp/mail/forget-password` → `sendForgetPasswordOtp`
+
+4. **Controller Logic**
+   - Extracts `to` and `otp` from validated request
+   - Selects appropriate email template
+   - Calls Nodemailer to send email
+
+5. **Email Delivery**
+   - Connects to SMTP provider (Gmail, SendGrid, etc.)
+   - Sends HTML email with OTP
+   - Logs delivery result
+
+6. **Response**
+   - Returns success/error JSON
+   - Logs final status
+
+### Stateless Design Benefits
+
+- **Horizontal Scaling**: No session state to manage
+- **Fault Tolerance**: Service can restart without data loss
+- **Simplicity**: No database or caching required
+- **Performance**: Fast response times (typically <1s)
 
 ---
 
 ## Integration Points
 
-| Direction  | Service        | Protocol    | Purpose                     |
-| ---------- | -------------- | ----------- | --------------------------- |
-| Upstream   | OneAuth        | REST + HMAC | Sends OTP requests          |
-| Downstream | SMTP Provider  | SMTP / TLS  | Email delivery              |
-| Monitoring | Logging system | JSON logs   | Debugging and observability |
+| Direction      | Service        | Protocol    | Purpose                     | Data Flow         |
+| -------------- | -------------- | ----------- | --------------------------- | ----------------- |
+| **Upstream**   | OneAuth        | REST + HMAC | Sends OTP requests          | POST /otp/mail/\* |
+| **Downstream** | SMTP Provider  | SMTP / TLS  | Email delivery              | Email with OTP    |
+| **Monitoring** | Logging system | JSON logs   | Debugging and observability | Structured logs   |
 
-> **Design Principle:**
-> OneMail is **stateless**. It does not store OTPs or user information.
+### Upstream Integration (OneAuth)
+
+OneAuth integrates with OneMail by:
+
+1. **OTP Generation**: Creates random 6-digit OTP
+2. **Payload Preparation**: Constructs request with email, OTP, timestamp
+3. **Signature Creation**: Uses shared `SIGNATURE_SECRET` to HMAC sign payload
+4. **HTTP Request**: POSTs to OneMail endpoint
+5. **Response Handling**: Processes success/failure
+
+**Integration Code Example (OneAuth side):**
+
+```typescript
+import crypto from "crypto";
+
+const sendOtpEmail = async (email: string, otp: string) => {
+  const timestamp = Date.now().toString();
+  const payload = `${email}:${otp}:${timestamp}`;
+
+  const signature = crypto
+    .createHmac("sha256", process.env.SIGNATURE_SECRET)
+    .update(payload)
+    .digest("hex");
+
+  const response = await fetch(
+    "https://onemail.yourdomain.com/otp/mail/register",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        to: email,
+        otp,
+        timestamp,
+        signature,
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to send OTP email");
+  }
+};
+```
+
+### Downstream Integration (SMTP Providers)
+
+OneMail integrates with email providers via SMTP:
+
+- **Connection**: TLS-encrypted SMTP connection
+- **Authentication**: Username/password or API keys
+- **Templates**: HTML emails with responsive design
+- **Tracking**: Logs delivery status (not bounces/opens)
+
+**Supported Providers:**
+
+- Gmail SMTP
+- SendGrid
+- Amazon SES
+- Custom SMTP servers
 
 ---
 
-# Tech Stack
+## Data Flow & Security Boundaries
+
+```
+┌─────────────────┐    Signed Request    ┌─────────────────┐    Email    ┌─────────────────┐
+│     OneAuth     │ ──────────────────► │     OneMail     │ ──────────► │  Email Provider │
+│                 │                     │                 │             │                 │
+│ • Generates OTP │                     │ • Validates sig │             │ • Delivers mail │
+│ • Signs request │                     │ • Sends email   │             │ • User receives │
+│ • Handles auth  │                     │ • Stateless     │             │ • OTP entry     │
+└─────────────────┘                     └─────────────────┘             └─────────────────┘
+```
+
+**Security Boundaries:**
+
+- OneMail never stores OTPs (stateless)
+- OneAuth handles OTP verification
+- Shared secret only for request signing
+- No user data persistence in OneMail
+
+---
+
+## Error Handling & Resilience
+
+- **Fail-Fast**: Invalid requests rejected immediately
+- **Graceful Degradation**: SMTP failures logged but don't crash service
+- **Circuit Breaker Pattern**: Recommended for high-traffic scenarios
+- **Retry Logic**: Upstream services should implement retries for 5xx errors
+
+> **Design Principle:** OneMail is **stateless**. It does not store OTPs or user information.
+
+---
+
+# <ins>Tech Stack</ins>
 
 | Layer         | Technology         | Version  | Purpose            |
 | ------------- | ------------------ | -------- | ------------------ |
@@ -161,7 +317,7 @@ Email Provider (Gmail / SendGrid / SES)
 
 ---
 
-# Responsibilities & Boundaries
+# <ins>Responsibilities & Boundaries</ins>
 
 ## What OneMail Handles
 
@@ -188,7 +344,7 @@ Email Provider (Gmail / SendGrid / SES)
 
 ---
 
-# API Reference
+# <ins>API Reference</ins>
 
 > **Base URL**
 
@@ -215,27 +371,139 @@ https://onemail.yourdomain.com/otp
 
 ---
 
-## Example Request
+## Request Format
+
+All requests must include the following JSON payload:
+
+```json
+{
+  "to": "user@example.com",
+  "otp": "123456",
+  "timestamp": "1704067200000",
+  "signature": "a1b2c3d4e5f6..."
+}
+```
+
+### Field Descriptions
+
+| Field       | Type   | Required | Description                    | Validation Rules                       |
+| ----------- | ------ | -------- | ------------------------------ | -------------------------------------- |
+| `to`        | string | Yes      | Recipient email address        | Valid email format, trimmed, lowercase |
+| `otp`       | string | Yes      | 6-digit One-Time Password      | Exactly 6 digits                       |
+| `timestamp` | string | Yes      | Unix timestamp in milliseconds | Numeric string, within valid age       |
+| `signature` | string | Yes      | HMAC SHA256 signature          | Hex string, matches expected           |
+
+---
+
+## Example Requests
+
+### Registration OTP
+
+**Endpoint:** `POST /otp/mail/register`
+
+**Request Body:**
 
 ```json
 {
   "to": "alice@example.com",
   "otp": "483920",
-  "timestamp": "1640995200123",
-  "signature": "a1b2c3d4e5f6..."
+  "timestamp": "1704067200000",
+  "signature": "5d41402abc4b2a76b9719d911017c592"
 }
+```
+
+**cURL Example:**
+
+```bash
+curl -X POST http://localhost:5002/otp/mail/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "alice@example.com",
+    "otp": "483920",
+    "timestamp": "1704067200000",
+    "signature": "5d41402abc4b2a76b9719d911017c592"
+  }'
+```
+
+**JavaScript Example (Client-side):**
+
+```javascript
+const crypto = require("crypto");
+
+const payload = {
+  to: "alice@example.com",
+  otp: "483920",
+  timestamp: Date.now().toString(),
+};
+
+const signature = crypto
+  .createHmac("sha256", "your-shared-secret")
+  .update(`${payload.to}:${payload.otp}:${payload.timestamp}`)
+  .digest("hex");
+
+payload.signature = signature;
+
+fetch("http://localhost:5002/otp/mail/register", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload),
+});
 ```
 
 ---
 
-## Field Validation
+### Password Reset OTP
 
-| Field     | Type   | Required | Rule           |
-| --------- | ------ | -------- | -------------- |
-| to        | string | Yes      | Valid email    |
-| otp       | string | Yes      | 6 digit OTP    |
-| timestamp | string | Yes      | Unix timestamp |
-| signature | string | Yes      | HMAC SHA256    |
+**Endpoint:** `POST /otp/mail/forget-password`
+
+**Request Body:**
+
+```json
+{
+  "to": "bob@example.com",
+  "otp": "729184",
+  "timestamp": "1704067300000",
+  "signature": "7c4a8d09ca3762af61e59520943dc264"
+}
+```
+
+**cURL Example:**
+
+```bash
+curl -X POST http://localhost:5002/otp/mail/forget-password \
+  -H "Content-Type: application/json" \
+  -d '{
+    "to": "bob@example.com",
+    "otp": "729184",
+    "timestamp": "1704067300000",
+    "signature": "7c4a8d09ca3762af61e59520943dc264"
+  }'
+```
+
+**JavaScript Example (Client-side):**
+
+```javascript
+const crypto = require("crypto");
+
+const payload = {
+  to: "bob@example.com",
+  otp: "729184",
+  timestamp: Date.now().toString(),
+};
+
+const signature = crypto
+  .createHmac("sha256", "your-shared-secret")
+  .update(`${payload.to}:${payload.otp}:${payload.timestamp}`)
+  .digest("hex");
+
+payload.signature = signature;
+
+fetch("http://localhost:5002/otp/mail/forget-password", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(payload),
+});
+```
 
 ---
 
@@ -250,7 +518,38 @@ https://onemail.yourdomain.com/otp
 
 ---
 
-## Error Response
+## Error Responses
+
+### Validation Errors
+
+**Status: 400**
+
+```json
+{
+  "success": false,
+  "message": "Missing required fields"
+}
+```
+
+**Status: 400**
+
+```json
+{
+  "success": false,
+  "message": "Invalid timestamp format"
+}
+```
+
+**Status: 410**
+
+```json
+{
+  "success": false,
+  "message": "Request Expired"
+}
+```
+
+**Status: 401**
 
 ```json
 {
@@ -259,34 +558,277 @@ https://onemail.yourdomain.com/otp
 }
 ```
 
+### Rate Limiting
+
+**Status: 429**
+
+```json
+{
+  "success": false,
+  "message": "Too many requests from this IP, please try again later"
+}
+```
+
+### Server Errors
+
+**Status: 500**
+
+```json
+{
+  "success": false,
+  "message": "Failed to send OTP"
+}
+```
+
 ---
 
 ## Status Codes
 
-| Code | Meaning               |
-| ---- | --------------------- |
-| 200  | Success               |
-| 400  | Validation error      |
-| 429  | Too many requests     |
-| 500  | Internal server error |
+| Code | Meaning               | Description                 |
+| ---- | --------------------- | --------------------------- |
+| 200  | Success               | Email sent successfully     |
+| 400  | Bad Request           | Validation error in request |
+| 401  | Unauthorized          | Invalid signature           |
+| 410  | Gone                  | Request timestamp expired   |
+| 429  | Too Many Requests     | Rate limit exceeded         |
+| 500  | Internal Server Error | SMTP or server error        |
 
 ---
 
-# Security & Authentication
+# <ins>Security & Authentication</ins>
 
-> **Request Signing using HMAC SHA256**
+OneMail implements multiple layers of security to ensure secure OTP email delivery. The primary security mechanism is **HMAC SHA256 request signing** combined with **timestamp freshness validation** and **rate limiting**.
 
-Every request must include a **signature** to prove authenticity.
+> **Note:** While the signature validation logic is implemented in the codebase (`middlewares/signatureValidator.ts`), it is currently not applied to the routes. This is a security gap that should be addressed in production deployments.
 
-Example:
+---
+
+## HMAC SHA256 Request Signing
+
+Every API request must be cryptographically signed to prevent unauthorized access and request tampering.
+
+### How It Works
+
+1. **Payload Construction**: Create a string from the request fields in the format `to:otp:timestamp`
+2. **HMAC Generation**: Use SHA256 HMAC with a shared secret key
+3. **Signature Inclusion**: Include the hex-encoded signature in the request
+4. **Server Verification**: OneMail verifies the signature using the same algorithm
+
+### Signature Algorithm Details
+
+**Input Format:**
+
+```
+{email}:{otp}:{timestamp}
+```
+
+**Example:**
+
+```
+alice@example.com:123456:1704067200000
+```
+
+**HMAC Generation:**
 
 ```javascript
-const payload = `${to}${otp}${timestamp}`;
+const crypto = require("crypto");
 
+const payload = `${to}:${otp}:${timestamp}`;
 const signature = crypto
   .createHmac("sha256", SIGNATURE_SECRET)
   .update(payload)
   .digest("hex");
+```
+
+**Security Properties:**
+
+- **Integrity**: Prevents request tampering
+- **Authenticity**: Proves request comes from authorized source
+- **Non-repudiation**: Sender cannot deny sending the request
+
+---
+
+## Timestamp Freshness Validation
+
+Requests include a timestamp to prevent replay attacks and ensure timeliness.
+
+### Validation Rules
+
+| Check      | Description            | Development | Production  |
+| ---------- | ---------------------- | ----------- | ----------- |
+| **Format** | Must be numeric string | ±10 minutes | ±2 minutes  |
+| **Future** | Cannot be from future  | Not allowed | Not allowed |
+| **Age**    | Maximum allowed age    | 10 minutes  | 2 minutes   |
+
+### Why Timestamp Validation?
+
+- **Replay Attack Prevention**: Old signed requests cannot be reused
+- **Clock Skew Handling**: Accounts for minor time differences between servers
+- **DoS Protection**: Prevents accumulation of stale requests
+
+**Implementation:**
+
+```typescript
+const now = Date.now();
+const age = now - Number(timestamp);
+
+// Check if timestamp is too old
+if (age > MAX_AGE_MS) {
+  return res.status(410).json({ success: false, message: "Request Expired" });
+}
+
+// Check if timestamp is from future
+if (age < 0) {
+  return res
+    .status(400)
+    .json({ success: false, message: "Timestamp from future" });
+}
+```
+
+---
+
+## Rate Limiting
+
+Prevents abuse and ensures fair resource usage.
+
+### Configuration
+
+| Environment | Requests/Minute | Window (ms) | IP Detection    |
+| ----------- | --------------- | ----------- | --------------- |
+| Development | 10              | 60000       | Local IP        |
+| Production  | 100             | 60000       | X-Forwarded-For |
+
+### Rate Limit Algorithm
+
+- **Token Bucket**: Allows bursts up to the limit
+- **Sliding Window**: Resets every minute
+- **IP-based**: Tracks requests per client IP
+- **Logging**: Warns on limit hits
+
+**Headers Added:**
+
+```
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 99
+X-RateLimit-Reset: 1704067260000
+```
+
+---
+
+## Input Validation & Sanitization
+
+All inputs are validated and sanitized to prevent injection attacks.
+
+### Validation Rules
+
+| Field       | Type   | Sanitization    | Validation            |
+| ----------- | ------ | --------------- | --------------------- |
+| `to`        | string | Trim, lowercase | Valid email regex     |
+| `otp`       | string | Trim            | 6 digits only         |
+| `timestamp` | string | Trim            | Numeric, within range |
+| `signature` | string | N/A             | 64-char hex string    |
+
+### Security Checks
+
+- **Type Validation**: Ensures correct data types
+- **Length Limits**: Prevents buffer overflow
+- **Regex Validation**: Email format checking
+- **Trimming**: Removes leading/trailing whitespace
+
+---
+
+## TLS & Transport Security
+
+All communications are encrypted in transit.
+
+### SMTP Security
+
+- **TLS Required**: Production mode enforces TLS
+- **Certificate Validation**: Verifies server certificates
+- **STARTTLS**: Upgrades plain connections to encrypted
+
+### HTTP Security
+
+- **HTTPS Recommended**: Use reverse proxy for SSL termination
+- **Trust Proxy**: Configures Express for proxy headers
+- **Secure Headers**: Rate limit headers for debugging
+
+---
+
+## Shared Secret Management
+
+The `SIGNATURE_SECRET` is the cornerstone of request authentication.
+
+### Security Requirements
+
+| Environment | Secret Source | Validation       |
+| ----------- | ------------- | ---------------- |
+| Development | `.env` file   | Warns if default |
+| Production  | Environment   | Required, strong |
+
+### Best Practices
+
+- **Rotation**: Change every 90 days
+- **Storage**: Never in code repository
+- **Distribution**: Secure sharing between OneAuth and OneMail
+- **Length**: Minimum 32 characters
+
+**Environment Setup:**
+
+```bash
+# Generate strong secret
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+
+# Set in environment
+export SIGNATURE_SECRET="your-32-char-hex-secret"
+```
+
+---
+
+## Threat Model & Mitigations
+
+### Potential Threats
+
+| Threat                | Mitigation                      |
+| --------------------- | ------------------------------- |
+| **Replay Attacks**    | Timestamp freshness validation  |
+| **Request Tampering** | HMAC signature verification     |
+| **Brute Force**       | Rate limiting                   |
+| **DoS Attacks**       | Input validation, rate limiting |
+| **Man-in-the-Middle** | TLS encryption                  |
+| **Secret Leakage**    | Environment isolation, rotation |
+
+### Attack Scenarios
+
+1. **Stolen Request**: Old requests rejected by timestamp check
+2. **Modified Payload**: Signature mismatch detected
+3. **Flooding**: Rate limiter blocks excessive requests
+4. **Invalid Data**: Input validation rejects malformed requests
+
+---
+
+## Security Monitoring
+
+Security events are logged for monitoring and alerting.
+
+### Logged Events
+
+- Rate limit violations
+- Signature validation failures
+- Timestamp validation errors
+- Input validation failures
+
+### Log Example
+
+```json
+{
+  "timestamp": "2026-03-10T11:52:34.123Z",
+  "level": "warn",
+  "message": "Rate limit exceeded",
+  "ip": "192.168.1.100",
+  "path": "/otp/mail/register",
+  "limit": 100
+}
 ```
 
 ---
@@ -300,7 +842,7 @@ const signature = crypto
 
 ---
 
-# Environment Variables
+# <ins>Environment Variables</ins>
 
 | Variable          | Example                                   | Required | Description   |
 | ----------------- | ----------------------------------------- | -------- | ------------- |
@@ -316,7 +858,7 @@ const signature = crypto
 
 ---
 
-# Setup & Deployment
+# <ins>Setup & Deployment</ins>
 
 ## Local Development
 
@@ -356,7 +898,7 @@ onemail:latest
 
 ---
 
-# Configuration & Modes
+# <ins>Configuration & Modes</ins>
 
 | Setting          | Development | Production  |
 | ---------------- | ----------- | ----------- |
@@ -368,7 +910,7 @@ onemail:latest
 
 ---
 
-# Logging & Observability
+# <ins>Logging & Observability</ins>
 
 > Logging uses **Winston structured JSON logs**
 
@@ -398,7 +940,7 @@ Example log entry:
 
 ---
 
-# Error Handling
+# <ins>Error Handling</ins>
 
 > OneMail follows **fail-fast error handling**
 
@@ -412,7 +954,7 @@ Example log entry:
 
 ---
 
-# Best Practices & Recommendations
+# <ins>Best Practices & Recommendations</ins>
 
 - Rotate `SIGNATURE_SECRET` every **90 days**
 - Use dedicated email services like **SendGrid / SES**
@@ -423,9 +965,9 @@ Example log entry:
 
 ---
 
-# Support
+# <ins>Support</ins>
 
-> If problems occur:
+If problems occur:
 
 1. Check service logs
 2. Validate environment variables
@@ -434,16 +976,11 @@ Example log entry:
 
 ---
 
-# License
+# <ins>License</ins>
 
 MIT License
 
 ---
 
-<div align="center">
-
-**Happy Mailing 📧**
-
-</div>
 
 </div>
