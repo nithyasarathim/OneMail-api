@@ -1,0 +1,2036 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OneMail API — Documentation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f0f9ff;
+        --bg-code: #f8fafc;
+        --bg-table-head: #0ea5e9;
+        --bg-table-alt: #f0f9ff;
+        --color-primary: #000000;
+        --color-secondary: #374151;
+        --color-muted: #6b7280;
+        --color-accent: #0ea5e9;
+        --color-accent-dark: #0284c7;
+        --color-accent-light: #e0f2fe;
+        --color-border: #e2e8f0;
+        --color-code-text: #0369a1;
+        --font-heading: "Poppins", sans-serif;
+        --font-body: "Nunito Sans", sans-serif;
+        --radius: 10px;
+        --radius-sm: 6px;
+        --shadow:
+          0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 16px rgba(14, 165, 233, 0.08);
+        --shadow-md: 0 4px 24px rgba(14, 165, 233, 0.13);
+        --page-margin: 64px;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--bg-primary);
+        color: var(--color-primary);
+        line-height: 1.75;
+        font-size: 15.5px;
+      }
+
+      /* ── SIDEBAR ── */
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: var(--page-margin);
+        width: 260px;
+        height: 100vh;
+        background: var(--bg-primary);
+        border-right: 1.5px solid var(--color-border);
+        overflow-y: auto;
+        overflow-x: hidden;
+        z-index: 100;
+        padding: 0 0 32px 0;
+      }
+
+      .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 24px 20px 20px;
+        border-bottom: 1.5px solid var(--color-border);
+        margin-bottom: 12px;
+      }
+
+      .sidebar-brand .logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0ea5e9;
+        overflow: hidden;
+      }
+
+      .sidebar-brand .logo svg {
+        width: 20px;
+        height: 20px;
+        color: white;
+      }
+
+      .sidebar-brand-name {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 15px;
+        color: var(--color-primary);
+        letter-spacing: -0.3px;
+      }
+
+      .sidebar-brand-sub {
+        font-size: 10.5px;
+        color: var(--color-muted);
+        font-family: var(--font-body);
+      }
+
+      .sidebar-section {
+        padding: 4px 12px;
+        margin-bottom: 2px;
+      }
+
+      .sidebar-section-title {
+        font-family: var(--font-heading);
+        font-size: 9.5px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--color-muted);
+        padding: 10px 8px 4px;
+        margin-top: 4px;
+      }
+
+      .sidebar-link {
+        display: block;
+        padding: 5px 8px;
+        border-radius: var(--radius-sm);
+        font-size: 13.5px;
+        color: var(--color-secondary);
+        text-decoration: none;
+        font-family: var(--font-body);
+        font-weight: 400;
+        transition: all 0.15s;
+      }
+
+      .sidebar-link:hover {
+        background: var(--color-accent-light);
+        color: var(--color-accent-dark);
+      }
+
+      .sidebar-coffee {
+        padding: 20px 10px 12px;
+        border-bottom: 1px solid var(--color-border);
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .sidebar-coffee a {
+        display: inline-block;
+        text-decoration: none;
+      }
+      .sidebar-coffee img {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .sidebar-credit {
+        padding: 12px 30px 20px;
+        border-top: 1px solid var(--color-border);
+        text-align: center;
+        font-size: 12px;
+        color: var(--color-muted);
+        font-family: var(--font-body);
+        margin-top: 20px;
+      }
+
+      .sidebar-credit a {
+        color: var(--color-accent);
+        text-decoration: none;
+        font-weight: bolder;
+        font-size: 14px;
+        transition: color 0.15s;
+      }
+
+      .sidebar-credit a:hover {
+        color: var(--color-accent-dark);
+        text-decoration: underline;
+      }
+
+      /* ── MAIN ── */
+      .main {
+        margin-left: calc(260px + var(--page-margin));
+        margin-right: var(--page-margin);
+        min-height: 100vh;
+      }
+
+      .hero {
+        background: #ffffff;
+        padding: 50px 64px 48px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 32px;
+      }
+
+      .hero-logo {
+        flex-shrink: 0;
+        height: 120px;
+        width: auto;
+        object-fit: contain;
+        display: block;
+      }
+
+      .hero-text {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .hero-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        position: relative;
+        z-index: 1;
+        justify-content: center;
+      }
+
+      .tech-badge {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        color: #0369a1;
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        font-family: var(--font-heading);
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+      }
+
+      /* ── CONTENT ── */
+      .content {
+        max-width: 940px;
+        padding: 20px 64px 80px;
+        margin: 0 auto;
+      }
+
+      .section {
+        margin-bottom: 60px;
+      }
+
+      h2 {
+        font-family: var(--font-heading);
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--color-primary);
+        letter-spacing: -0.6px;
+        margin-bottom: 6px;
+        padding-bottom: 12px;
+        border-bottom: 2px solid var(--color-accent);
+        display: inline-block;
+      }
+
+      h3 {
+        font-family: var(--font-heading);
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--color-primary);
+        margin: 28px 0 10px;
+        letter-spacing: -0.3px;
+      }
+
+      p {
+        color: var(--color-secondary);
+        margin-bottom: 14px;
+        font-family: var(--font-body);
+      }
+
+      .callout {
+        background: var(--color-accent-light);
+        border-left: 4px solid var(--color-accent);
+        padding: 14px 20px;
+        border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+        margin: 20px 0;
+        color: var(--color-secondary);
+        font-size: 14.5px;
+      }
+
+      .callout strong {
+        color: var(--color-primary);
+        font-family: var(--font-heading);
+      }
+
+      /* ── TABLES ── */
+      .table-wrap {
+        overflow-x: auto;
+        border-radius: var(--radius);
+        border: 1.5px solid var(--color-border);
+        margin: 20px 0;
+        box-shadow: var(--shadow);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--font-body);
+        font-size: 13.5px;
+      }
+
+      thead tr {
+        background: var(--bg-table-head);
+      }
+
+      thead th {
+        font-family: var(--font-heading);
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.5px;
+        color: #ffffff;
+        padding: 11px 16px;
+        text-align: left;
+      }
+
+      tbody tr {
+        border-top: 1px solid var(--color-border);
+      }
+      tbody tr:nth-child(even) {
+        background: var(--bg-table-alt);
+      }
+      tbody tr:hover {
+        background: #dbeafe44;
+      }
+
+      td {
+        padding: 10px 16px;
+        color: var(--color-secondary);
+        vertical-align: top;
+      }
+
+      td:first-child {
+        font-family: var(--font-heading);
+        font-weight: 500;
+        color: var(--color-primary);
+        white-space: nowrap;
+      }
+
+      /* ── CODE ── */
+      code {
+        font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+        font-size: 13px;
+        background: var(--bg-code);
+        color: var(--color-code-text);
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid #e0f2fe;
+      }
+
+      pre {
+        background: #0f172a;
+        border-radius: var(--radius);
+        padding: 22px 24px;
+        overflow-x: auto;
+        margin: 20px 0;
+        border: 1px solid #1e293b;
+        box-shadow: var(--shadow-md);
+        position: relative;
+      }
+
+      pre code {
+        background: transparent;
+        color: #e2e8f0;
+        border: none;
+        padding: 0;
+        font-size: 13px;
+        line-height: 1.8;
+      }
+
+      .pre-label {
+        font-family: var(--font-heading);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      /* ── API ROWS ── */
+      .api-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 11px 16px;
+        border: 1.5px solid var(--color-border);
+        border-radius: var(--radius-sm);
+        margin-bottom: 6px;
+        background: var(--bg-primary);
+        transition: all 0.15s;
+      }
+
+      .api-row:hover {
+        border-color: var(--color-accent);
+        background: var(--color-accent-light);
+        transform: translateX(3px);
+      }
+
+      .method {
+        font-family: var(--font-heading);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 3px 9px;
+        border-radius: 4px;
+        min-width: 52px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      .method-get {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .method-post {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .method-patch {
+        background: #fef9c3;
+        color: #854d0e;
+      }
+      .method-delete {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .api-path {
+        font-family: "SF Mono", monospace;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-primary);
+        min-width: 260px;
+        flex-shrink: 0;
+      }
+
+      .api-desc {
+        font-family: var(--font-body);
+        font-size: 13.5px;
+        color: var(--color-secondary);
+      }
+
+      /* ── FLOW ── */
+      .flow-sso {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0;
+        margin: 22px 0;
+        background: var(--bg-code);
+        border: 1.5px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+        row-gap: 10px;
+      }
+
+      .flow-sso .flow-step {
+        display: flex;
+        align-items: center;
+      }
+
+      .flow-node {
+        background: var(--color-accent-light);
+        border: 1.5px solid var(--color-accent);
+        color: var(--color-accent-dark);
+        font-family: var(--font-heading);
+        font-size: 12px;
+        font-weight: 600;
+        padding: 8px 14px;
+        border-radius: var(--radius-sm);
+        white-space: nowrap;
+      }
+
+      .flow-node.dark {
+        background: var(--color-primary);
+        border-color: var(--color-primary);
+        color: #fff;
+      }
+
+      .flow-node.controller {
+        background: #0ea5e9;
+        border-color: #0284c7;
+        color: white;
+      }
+
+      .flow-arrow {
+        color: var(--color-accent);
+        font-size: 18px;
+        padding: 0 6px;
+        flex-shrink: 0;
+      }
+
+      .flow {
+        display: flex;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+        margin: 22px 0;
+        background: var(--bg-code);
+        border: 1.5px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+      }
+
+      .flow-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .flow-connector {
+        padding-left: 60px;
+        color: var(--color-accent);
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      /* ── ENV BLOCK ── */
+      .env-block {
+        background: #0f172a;
+        border-radius: var(--radius);
+        padding: 22px 24px;
+        margin: 20px 0;
+        border: 1px solid #1e293b;
+      }
+
+      .env-line {
+        font-family: "SF Mono", monospace;
+        font-size: 12.5px;
+        line-height: 2;
+        color: #94a3b8;
+      }
+
+      .env-key {
+        color: #7dd3fc;
+      }
+      .env-eq {
+        color: #64748b;
+      }
+      .env-val {
+        color: #a3e635;
+      }
+      .env-comment {
+        color: #475569;
+        font-style: italic;
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        background: #f8fafc;
+        border-top: 1.5px solid var(--color-border);
+        padding: 28px 64px;
+        margin-left: calc(260px + var(--page-margin));
+        margin-right: var(--page-margin);
+      }
+
+      footer p {
+        font-size: 13px;
+        color: var(--color-muted);
+        margin: 0;
+      }
+      footer strong {
+        font-family: var(--font-heading);
+        color: var(--color-accent);
+      }
+
+      /* scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 99px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-accent);
+      }
+
+      ul,
+      ol {
+        padding-left: 22px;
+        color: var(--color-secondary);
+        margin: 10px 0;
+      }
+      li {
+        margin-bottom: 5px;
+        font-family: var(--font-body);
+      }
+
+      hr {
+        border: none;
+        border-top: 1.5px solid var(--color-border);
+        margin: 40px 0;
+      }
+
+      @media (max-width: 900px) {
+        :root {
+          --page-margin: 20px;
+        }
+        .sidebar {
+          display: none;
+        }
+        .main,
+        footer {
+          margin-left: 0;
+          margin-right: var(--page-margin);
+        }
+        .content {
+          padding: 32px 20px 60px;
+        }
+        .hero {
+          padding: 48px 20px 40px;
+        }
+        footer {
+          padding: 24px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── SIDEBAR ── -->
+    <nav class="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
+        </div>
+        <div>
+          <div class="sidebar-brand-name">OneMail API</div>
+          <div class="sidebar-brand-sub">Documentation</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Overview</div>
+        <a class="sidebar-link" href="#overview">Overview</a>
+        <a class="sidebar-link" href="#why">Why OneMail Works</a>
+        <a class="sidebar-link" href="#responsibilities"
+          >Core Responsibilities</a
+        >
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Architecture</div>
+        <a class="sidebar-link" href="#architecture">Project Structure</a>
+        <a class="sidebar-link" href="#flow">Request Flow</a>
+        <a class="sidebar-link" href="#middleware">Middleware Layer</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Security</div>
+        <a class="sidebar-link" href="#security">Security Mechanism</a>
+        <a class="sidebar-link" href="#signature-generator"
+          >Signature Generator</a
+        >
+        <a class="sidebar-link" href="#signature-validator"
+          >Signature Validator</a
+        >
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Reference</div>
+        <a class="sidebar-link" href="#env">Environment Variables</a>
+        <a class="sidebar-link" href="#templates">Mail Templates</a>
+        <a class="sidebar-link" href="#api">API Reference</a>
+        <a class="sidebar-link" href="#integration">Upstream Integration</a>
+        <a class="sidebar-link" href="#setup">Installation & Setup</a>
+        <a class="sidebar-link" href="#lifecycle">Request Lifecycle</a>
+        <a class="sidebar-link" href="#logging">Logging & Observability</a>
+        <a class="sidebar-link" href="#errors">Error Handling</a>
+        <a class="sidebar-link" href="#hardening">Production Hardening</a>
+      </div>
+
+      <div class="sidebar-coffee">
+        <a href="https://buymeacoffee.com/nithyasarathim" target="_blank">
+          <img
+            src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black"
+            alt="Buy Me a Coffee"
+          />
+        </a>
+      </div>
+
+      <div class="sidebar-credit">
+        Developed by
+        <a href="https://github.com/nithyasarathim" target="_blank"
+          >Nithyasarathim</a
+        >
+      </div>
+    </nav>
+
+    <!-- ── MAIN ── -->
+    <div class="main">
+      <!-- HERO -->
+      <div class="hero">
+        <div class="hero-text">
+          <img src="./logo.png" alt="OneMail Logo" class="hero-logo" />
+          <div class="hero-badges">
+            <span class="tech-badge">Node.js 18+</span>
+            <span class="tech-badge">Express 5</span>
+            <span class="tech-badge">TypeScript 5</span>
+            <span class="tech-badge">Nodemailer · SMTP</span>
+            <span class="tech-badge">HMAC SHA-256</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+        <!-- OVERVIEW -->
+        <div class="section" id="overview">
+          <h2>Overview</h2>
+          <p style="margin-top: 14px">
+            OneMail API is a dedicated mail microservice for secure One-Time
+            Password delivery. It is intentionally small, stateless, and
+            focused: upstream services such as OneAuth generate OTPs, sign the
+            request, and ask OneMail to deliver the message through an SMTP
+            provider.
+          </p>
+          <p>
+            The service exists to keep email delivery out of the authentication
+            core. OneAuth owns identity, OTP generation, and OTP verification.
+            OneMail owns request authenticity checks, mail template rendering,
+            SMTP delivery, request logging, rate limiting, and consistent API
+            error responses.
+          </p>
+        </div>
+
+        <hr />
+
+        <!-- WHY ONEMAIL WORKS -->
+        <div class="section" id="why">
+          <h2>Why OneMail Works</h2>
+          <div class="table-wrap" style="margin-top: 14px">
+            <table>
+              <thead>
+                <tr>
+                  <th>Capability</th>
+                  <th>What it provides</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Signature security</td>
+                  <td>
+                    Prevents arbitrary clients from triggering OTP emails and
+                    reduces email-spam abuse risk.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Template separation</td>
+                  <td>
+                    Keeps HTML email content in <code>templates/</code>, away
+                    from route and controller logic.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Microservice boundary</td>
+                  <td>
+                    Lets OneAuth call a focused
+                    <code>ONE_MAIL_SERVER_URL</code> without coupling
+                    authentication logic to SMTP details.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Stateless operation</td>
+                  <td>
+                    No database is required; the service does not store OTPs or
+                    user accounts.
+                  </td>
+                </tr>
+                <tr>
+                  <td>SMTP abstraction</td>
+                  <td>
+                    Nodemailer allows the service to work with Gmail SMTP, SES,
+                    SendGrid SMTP, or a private SMTP relay.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- CORE RESPONSIBILITIES -->
+        <div class="section" id="responsibilities">
+          <h2>Core Responsibilities</h2>
+
+          <h3>OneMail handles</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Responsibility</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Signed request intake</td>
+                  <td>
+                    Receives OTP delivery requests from trusted internal
+                    services.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Signature validation</td>
+                  <td>
+                    Verifies the HMAC SHA-256 signature generated with a shared
+                    secret.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Timestamp freshness</td>
+                  <td>
+                    Rejects stale or future-dated signed payloads to reduce
+                    replay attacks.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Rate limiting</td>
+                  <td>
+                    Applies endpoint-level abuse protection with
+                    <code>express-rate-limit</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Template rendering</td>
+                  <td>Injects dynamic OTP data into HTML templates.</td>
+                </tr>
+                <tr>
+                  <td>SMTP dispatch</td>
+                  <td>
+                    Sends transactional emails through the configured SMTP
+                    account.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Observability</td>
+                  <td>
+                    Logs requests and errors through custom Winston logging.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>OneMail does not handle</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Out of scope</th>
+                  <th>Owner</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>OTP generation</td>
+                  <td>OneAuth or the upstream requester.</td>
+                </tr>
+                <tr>
+                  <td>OTP persistence</td>
+                  <td>OneAuth or the upstream requester.</td>
+                </tr>
+                <tr>
+                  <td>OTP verification</td>
+                  <td>OneAuth or the upstream requester.</td>
+                </tr>
+                <tr>
+                  <td>User account storage</td>
+                  <td>OneAuth.</td>
+                </tr>
+                <tr>
+                  <td>Marketing campaigns</td>
+                  <td>A separate email or campaign service.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- ARCHITECTURE -->
+        <div class="section" id="architecture">
+          <h2>Architecture</h2>
+
+          <span
+            class="pre-label"
+            style="
+              display: block;
+              margin-top: 14px;
+              color: var(--color-muted);
+              font-family: var(--font-heading);
+              font-size: 11px;
+              font-weight: 600;
+              letter-spacing: 1px;
+            "
+          >
+            Project Structure
+          </span>
+          <pre><code>.
+|-- app.ts
+|-- server.ts
+|-- config/
+|   |-- env.ts
+|   `-- mailer.ts
+|-- controllers/
+|   `-- otp.controller.ts
+|-- middlewares/
+|   |-- errorHandler.ts
+|   |-- rateLimiter.ts
+|   |-- requestLogger.ts
+|   `-- signatureValidator.ts
+|-- routes/
+|   `-- otp.routes.ts
+|-- templates/
+|   |-- forgetPwd-otp.template.ts
+|   `-- signin-otp.template.ts
+`-- utils/
+    |-- APIError.ts
+    |-- logger.ts
+    `-- signatureGenerator.ts</code></pre>
+
+          <h3>Application Entry</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>File</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>server.ts</td>
+                  <td>Starts the HTTP server on <code>config.port</code>.</td>
+                </tr>
+                <tr>
+                  <td>app.ts</td>
+                  <td>
+                    Creates the Express app, configures JSON parsing, request
+                    logging, health route, OTP route mounting, 404 handling, and
+                    global error handling.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Config Layer</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>File</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>config/env.ts</td>
+                  <td>
+                    Loads environment variables through <code>dotenv</code> and
+                    exposes typed runtime configuration.
+                  </td>
+                </tr>
+                <tr>
+                  <td>config/mailer.ts</td>
+                  <td>
+                    Creates the Nodemailer transporter from SMTP host, port,
+                    user, and password. Production mode enables stricter TLS
+                    behavior.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Controller Layer</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>File</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>controllers/otp.controller.ts</td>
+                  <td>
+                    Contains OTP mail use cases: registration OTP and
+                    password-reset OTP. Each controller selects the correct
+                    template and calls <code>transporter.sendMail</code>.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Route Layer</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>File</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>routes/otp.routes.ts</td>
+                  <td>
+                    Defines OTP mail endpoints under the
+                    <code>/otp</code> prefix.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Current protected endpoints:</p>
+          <div class="api-row">
+            <span class="method method-post">POST</span>
+            <span class="api-path">/otp/mail/register</span>
+            <span class="api-desc"
+              >Sends registration verification OTP via
+              <code>sendRegisterOtp</code>.</span
+            >
+          </div>
+          <div class="api-row">
+            <span class="method method-post">POST</span>
+            <span class="api-path">/otp/mail/forget-password</span>
+            <span class="api-desc"
+              >Sends password reset OTP via
+              <code>sendForgetPasswordOtp</code>.</span
+            >
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- SECURE MAIL FLOW -->
+        <div class="section" id="flow">
+          <h2>Secure Mail Request Flow</h2>
+          <p style="margin-top: 14px">
+            The request follows a signed handshake before any mail is
+            dispatched.
+          </p>
+
+          <div class="flow-sso">
+            <div class="flow-step">
+              <div class="flow-node dark">Requester</div>
+              <span class="flow-arrow">→</span>
+            </div>
+            <div class="flow-step">
+              <div class="flow-node">Signature Generation</div>
+              <span class="flow-arrow">→</span>
+            </div>
+            <div class="flow-step">
+              <div class="flow-node">API Request</div>
+              <span class="flow-arrow">→</span>
+            </div>
+            <div class="flow-step">
+              <div class="flow-node">signatureValidator</div>
+              <span class="flow-arrow">→</span>
+            </div>
+            <div class="flow-step">
+              <div class="flow-node">Controller</div>
+              <span class="flow-arrow">→</span>
+            </div>
+            <div class="flow-step">
+              <div class="flow-node controller">Mail Dispatched</div>
+            </div>
+          </div>
+
+          <p>
+            If validation fails, the middleware short-circuits with a
+            <code>400</code>, <code>401</code>, or <code>410</code> response
+            before the controller is reached.
+          </p>
+        </div>
+
+        <hr />
+
+        <!-- MIDDLEWARE LAYER -->
+        <div class="section" id="middleware">
+          <h2>Middleware Layer</h2>
+
+          <div class="table-wrap" style="margin-top: 14px">
+            <table>
+              <thead>
+                <tr>
+                  <th>Middleware</th>
+                  <th>Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>requestLogger.ts</td>
+                  <td>Measures request duration and logs request metadata.</td>
+                </tr>
+                <tr>
+                  <td>rateLimiter.ts</td>
+                  <td>
+                    Limits excessive requests by IP and reports
+                    <code>429</code> through <code>APIError</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>signatureValidator.ts</td>
+                  <td>Validates signed OTP delivery requests.</td>
+                </tr>
+                <tr>
+                  <td>errorHandler.ts</td>
+                  <td>
+                    Converts thrown errors and <code>APIError</code> instances
+                    into JSON responses.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Recommended pipeline</h3>
+          <pre><code>app.use(express.json({ limit: isProduction ? "10kb" : "1mb" }));
+app.use(requestLogger);
+app.use("/otp", rateLimiter, OTPRouter);
+app.use(errorHandler);</code></pre>
+
+          <p>
+            The mail routes mount <code>signatureValidator</code> before each
+            controller:
+          </p>
+          <pre><code>OTPRouter.post("/mail/register", signatureValidator, sendRegisterOtp);
+OTPRouter.post("/mail/forget-password", signatureValidator, sendForgetPasswordOtp);</code></pre>
+        </div>
+
+        <hr />
+
+        <!-- SECURITY MECHANISM -->
+        <div class="section" id="security">
+          <h2>Security Mechanism</h2>
+          <p style="margin-top: 14px">
+            OneMail's primary security control is HMAC-based request signing.
+            This matters because OTP mail endpoints can otherwise be abused to
+            spam users, drain provider limits, or generate confusing account
+            emails.
+          </p>
+        </div>
+
+        <hr />
+
+        <!-- SIGNATURE GENERATOR -->
+        <div class="section" id="signature-generator">
+          <h2>signatureGenerator.ts</h2>
+          <p style="margin-top: 14px">
+            <code>utils/signatureGenerator.ts</code> creates a deterministic
+            HMAC SHA-256 signature from the payload string
+            <code>to:otp:timestamp</code>.
+          </p>
+          <p>The utility:</p>
+          <ul>
+            <li>Reads the shared secret from runtime config.</li>
+            <li>Rejects missing secrets.</li>
+            <li>
+              Rejects weak production secrets such as <code>QWERTY</code>.
+            </li>
+            <li>
+              Uses Node's <code>crypto.createHmac("sha256", secret)</code>.
+            </li>
+            <li>Returns a hex digest.</li>
+          </ul>
+
+          <pre><code>import crypto from "crypto";
+
+const timestamp = Date.now().toString();
+const data = `${to}:${otp}:${timestamp}`;
+
+const signature = crypto
+  .createHmac("sha256", process.env.SIGNATURE_SECRET!)
+  .update(data)
+  .digest("hex");</code></pre>
+        </div>
+
+        <hr />
+
+        <!-- SIGNATURE VALIDATOR -->
+        <div class="section" id="signature-validator">
+          <h2>signatureValidator.ts</h2>
+          <p style="margin-top: 14px">
+            <code>middlewares/signatureValidator.ts</code> protects mail
+            endpoints by validating both the payload and the signature.
+          </p>
+
+          <h3>Validation steps</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Step</th>
+                  <th>Check</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Required fields</td>
+                  <td>
+                    Ensures <code>to</code>, <code>otp</code>,
+                    <code>timestamp</code>, and <code>signature</code> exist.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Type safety</td>
+                  <td>Ensures all fields are non-empty strings.</td>
+                </tr>
+                <tr>
+                  <td>Normalization</td>
+                  <td>Trims values and lowercases the recipient email.</td>
+                </tr>
+                <tr>
+                  <td>Timestamp format</td>
+                  <td>
+                    Ensures timestamp is a positive numeric millisecond string.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Future timestamp</td>
+                  <td>
+                    Rejects requests whose timestamp is ahead of server time.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Replay window</td>
+                  <td>
+                    Rejects expired requests. Production allows a shorter window
+                    than development.
+                  </td>
+                </tr>
+                <tr>
+                  <td>HMAC comparison</td>
+                  <td>
+                    Regenerates the expected signature and compares using
+                    <code>crypto.timingSafeEqual</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Sanitized body</td>
+                  <td>
+                    Stores normalized values in <code>req.body.data</code> for
+                    downstream usage.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Timestamp window</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Environment</th>
+                  <th>Max request age</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Development</td>
+                  <td>10 minutes</td>
+                </tr>
+                <tr>
+                  <td>Production</td>
+                  <td>2 minutes</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Signature payload</h3>
+          <pre><code>{
+  "to": "user@example.com",
+  "otp": "123456",
+  "timestamp": "1777635000000",
+  "signature": "generated_hmac_sha256_hex_digest"
+}</code></pre>
+
+          <h3>Security responses</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Failure</th>
+                  <th>Status</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Missing payload fields</td>
+                  <td>400</td>
+                  <td>Missing required fields</td>
+                </tr>
+                <tr>
+                  <td>Invalid field types</td>
+                  <td>400</td>
+                  <td>All payload must be string and non-empty</td>
+                </tr>
+                <tr>
+                  <td>Invalid timestamp</td>
+                  <td>400</td>
+                  <td>Invalid timestamp format</td>
+                </tr>
+                <tr>
+                  <td>Future timestamp</td>
+                  <td>400</td>
+                  <td>Timestamp from future</td>
+                </tr>
+                <tr>
+                  <td>Expired request</td>
+                  <td>410</td>
+                  <td>Request Expired</td>
+                </tr>
+                <tr>
+                  <td>Invalid signature</td>
+                  <td>401</td>
+                  <td>Invalid signature</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- ENVIRONMENT VARIABLES -->
+        <div class="section" id="env">
+          <h2>Environment Variables</h2>
+          <p style="margin-top: 14px">
+            The active runtime configuration is defined in
+            <code>config/env.ts</code>.
+          </p>
+
+          <div class="env-block">
+            <div class="env-line">
+              <span class="env-key">PORT</span><span class="env-eq">=</span
+              ><span class="env-val">5002</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">ENVIRONMENT</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">development</span>
+            </div>
+            <div class="env-line">&nbsp;</div>
+            <div class="env-line">
+              <span class="env-key">MAIL_HOST</span><span class="env-eq">=</span
+              ><span class="env-val">smtp.gmail.com</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">MAIL_PORT</span><span class="env-eq">=</span
+              ><span class="env-val">587</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">MAIL_USER</span><span class="env-eq">=</span
+              ><span class="env-val">your-smtp-user@example.com</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">MAIL_PASS</span><span class="env-eq">=</span
+              ><span class="env-val">your-provider-app-password</span>
+            </div>
+            <div class="env-line">&nbsp;</div>
+            <div class="env-line">
+              <span class="env-key">SIGNATURE_SECRET</span
+              ><span class="env-eq">=</span
+              ><span class="env-val">replace-with-a-long-random-secret</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">RATE_LIMIT</span
+              ><span class="env-eq">=</span><span class="env-val">10</span>
+            </div>
+            <div class="env-line">
+              <span class="env-key">RATE_LIMIT_WINDOW</span
+              ><span class="env-eq">=</span><span class="env-val">60000</span>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Variable</th>
+                  <th>Required</th>
+                  <th>Default</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>PORT</td>
+                  <td>No</td>
+                  <td><code>5002</code> dev / <code>8080</code> prod</td>
+                  <td>Server port for the OneMail API.</td>
+                </tr>
+                <tr>
+                  <td>ENVIRONMENT</td>
+                  <td>No</td>
+                  <td><code>development</code></td>
+                  <td>
+                    Runtime mode. Set to <code>production</code> to enforce
+                    production behavior.
+                  </td>
+                </tr>
+                <tr>
+                  <td>MAIL_HOST</td>
+                  <td>Yes</td>
+                  <td>None</td>
+                  <td>SMTP host, such as <code>smtp.gmail.com</code>.</td>
+                </tr>
+                <tr>
+                  <td>MAIL_PORT</td>
+                  <td>Yes</td>
+                  <td>None</td>
+                  <td>
+                    SMTP port, usually <code>587</code> for STARTTLS or
+                    <code>465</code> for secure SMTP.
+                  </td>
+                </tr>
+                <tr>
+                  <td>MAIL_USER</td>
+                  <td>Yes</td>
+                  <td>None</td>
+                  <td>SMTP username or sender account.</td>
+                </tr>
+                <tr>
+                  <td>MAIL_PASS</td>
+                  <td>Yes</td>
+                  <td>None</td>
+                  <td>SMTP password or provider app password.</td>
+                </tr>
+                <tr>
+                  <td>SIGNATURE_SECRET</td>
+                  <td>Yes in prod</td>
+                  <td><code>dev_secret_key</code> outside prod</td>
+                  <td>
+                    Shared secret used to generate and validate HMAC request
+                    signatures.
+                  </td>
+                </tr>
+                <tr>
+                  <td>RATE_LIMIT</td>
+                  <td>No</td>
+                  <td><code>10</code> dev / <code>100</code> prod</td>
+                  <td>Maximum requests allowed per rate-limit window.</td>
+                </tr>
+                <tr>
+                  <td>RATE_LIMIT_WINDOW</td>
+                  <td>No</td>
+                  <td><code>60000</code></td>
+                  <td>Rate-limit window in milliseconds.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Naming map for upstream services</h3>
+          <p>
+            If another service such as OneAuth refers to this service, map
+            concept names as follows:
+          </p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Concept</th>
+                  <th>Upstream name</th>
+                  <th>Current code name</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Service base URL</td>
+                  <td><code>ONE_MAIL_SERVER_URL</code></td>
+                  <td>Not consumed by this service</td>
+                  <td>
+                    Used by upstream callers, e.g.
+                    <code>http://localhost:5002</code>.
+                  </td>
+                </tr>
+                <tr>
+                  <td>Signature secret</td>
+                  <td><code>MAIL_SERVER_SECRET</code></td>
+                  <td><code>SIGNATURE_SECRET</code></td>
+                  <td>Both services must share the same value.</td>
+                </tr>
+                <tr>
+                  <td>SMTP host</td>
+                  <td><code>SMTP_HOST</code></td>
+                  <td><code>MAIL_HOST</code></td>
+                  <td>Rename only if you prefer SMTP-prefixed env names.</td>
+                </tr>
+                <tr>
+                  <td>SMTP port</td>
+                  <td><code>SMTP_PORT</code></td>
+                  <td><code>MAIL_PORT</code></td>
+                  <td>Numeric SMTP port.</td>
+                </tr>
+                <tr>
+                  <td>SMTP user</td>
+                  <td><code>SMTP_USER</code></td>
+                  <td><code>MAIL_USER</code></td>
+                  <td>Sender account.</td>
+                </tr>
+                <tr>
+                  <td>SMTP password</td>
+                  <td><code>SMTP_PASS</code></td>
+                  <td><code>MAIL_PASS</code></td>
+                  <td>App password or SMTP credential.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- MAIL TEMPLATES -->
+        <div class="section" id="templates">
+          <h2>Mail Templates</h2>
+          <p style="margin-top: 14px">
+            Templates live in <code>templates/</code> and return complete HTML
+            email documents. They are plain TypeScript functions, keeping
+            rendering predictable and easy to test. Dynamic data is injected
+            through function parameters rather than through global state or a
+            template engine.
+          </p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Template</th>
+                  <th>Function</th>
+                  <th>Use case</th>
+                  <th>Dynamic values</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>signin-otp.template.ts</td>
+                  <td><code>signInOtpTemplate(otp)</code></td>
+                  <td>Registration or sign-in verification email.</td>
+                  <td>
+                    Injects <code>otp</code> into the highlighted OTP block.
+                  </td>
+                </tr>
+                <tr>
+                  <td>forgetPwd-otp.template.ts</td>
+                  <td><code>forgetPasswordOtpTemplate(otp)</code></td>
+                  <td>Password reset verification email.</td>
+                  <td>Injects <code>otp</code> into the reset OTP block.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- API REFERENCE -->
+        <div class="section" id="api">
+          <h2>API Reference</h2>
+
+          <h3>Health Check</h3>
+          <div class="api-row">
+            <span class="method method-get">GET</span>
+            <span class="api-path">/</span>
+            <span class="api-desc"
+              >Returns service liveness, environment mode, and a status
+              flag.</span
+            >
+          </div>
+          <pre><code>{
+  "success": true,
+  "message": "Auth Mail server is alive",
+  "env": "development"
+}</code></pre>
+
+          <h3>Send Registration OTP</h3>
+          <div class="api-row">
+            <span class="method method-post">POST</span>
+            <span class="api-path">/otp/mail/register</span>
+            <span class="api-desc"
+              >Sends a registration verification OTP to the given email
+              address.</span
+            >
+          </div>
+          <p>Request body:</p>
+          <pre><code>{
+  "to": "user@example.com",
+  "otp": "123456",
+  "timestamp": "1777635000000",
+  "signature": "generated_hmac_sha256_hex_digest"
+}</code></pre>
+          <p>Success response:</p>
+          <pre><code>{
+  "message": "Mail sent successfully",
+  "success": true
+}</code></pre>
+
+          <h3>Send Password Reset OTP</h3>
+          <div class="api-row">
+            <span class="method method-post">POST</span>
+            <span class="api-path">/otp/mail/forget-password</span>
+            <span class="api-desc"
+              >Sends a password reset OTP to the given email address.</span
+            >
+          </div>
+          <p>Request body:</p>
+          <pre><code>{
+  "to": "user@example.com",
+  "otp": "123456",
+  "timestamp": "1777635000000",
+  "signature": "generated_hmac_sha256_hex_digest"
+}</code></pre>
+          <p>Success response:</p>
+          <pre><code>{
+  "message": "Mail sent successfully",
+  "success": true
+}</code></pre>
+        </div>
+
+        <hr />
+
+        <!-- UPSTREAM INTEGRATION -->
+        <div class="section" id="integration">
+          <h2>Upstream Integration Example</h2>
+          <p style="margin-top: 14px">
+            This is how OneAuth or another trusted backend should sign and call
+            OneMail:
+          </p>
+          <pre><code>import crypto from "crypto";
+
+async function sendOtpMail(to: string, otp: string) {
+  const timestamp = Date.now().toString();
+  const normalizedTo = to.trim().toLowerCase();
+  const data = `${normalizedTo}:${otp}:${timestamp}`;
+
+  const signature = crypto
+    .createHmac("sha256", process.env.SIGNATURE_SECRET!)
+    .update(data)
+    .digest("hex");
+
+  const response = await fetch(`${process.env.ONE_MAIL_SERVER_URL}/otp/mail/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ to: normalizedTo, otp, timestamp, signature })
+  });
+
+  if (!response.ok) {
+    throw new Error("OneMail failed to send OTP");
+  }
+
+  return response.json();
+}</code></pre>
+        </div>
+
+        <hr />
+
+        <!-- INSTALLATION & SETUP -->
+        <div class="section" id="setup">
+          <h2>Installation &amp; Setup</h2>
+
+          <h3>Prerequisites</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Requirement</th>
+                  <th>Recommended</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Node.js</td>
+                  <td><code>18+</code></td>
+                </tr>
+                <tr>
+                  <td>npm</td>
+                  <td><code>9+</code></td>
+                </tr>
+                <tr>
+                  <td>SMTP account</td>
+                  <td>
+                    Gmail app password, SendGrid SMTP, SES SMTP, or equivalent.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Install</h3>
+          <pre><code>npm install</code></pre>
+
+          <h3>Configure environment</h3>
+          <p>Create <code>.env</code> in the project root:</p>
+          <pre><code>cp .env.example .env</code></pre>
+          <p>
+            If <code>.env.example</code> is not present, create
+            <code>.env</code> manually using the variables listed in the
+            Environment section.
+          </p>
+
+          <h3>Development server</h3>
+          <pre><code>npm run dev</code></pre>
+          <p>Default local URL:</p>
+          <pre><code>http://localhost:5002</code></pre>
+
+          <h3>Build</h3>
+          <pre><code>npm run build</code></pre>
+
+          <h3>Production start</h3>
+          <pre><code>npm start</code></pre>
+        </div>
+
+        <hr />
+
+        <!-- REQUEST LIFECYCLE -->
+        <div class="section" id="lifecycle">
+          <h2>Request Lifecycle</h2>
+          <p style="margin-top: 14px">
+            End-to-end flow from the upstream caller to the user's inbox:
+          </p>
+
+          <div class="flow">
+            <div class="flow-row">
+              <div class="flow-node dark" style="min-width: 200px">
+                OneAuth generates OTP
+              </div>
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 200px">
+                Sign to:otp:timestamp
+              </div>
+              <span
+                style="
+                  font-family: var(--font-body);
+                  font-size: 12.5px;
+                  color: var(--color-muted);
+                "
+                >HMAC SHA-256 with shared secret</span
+              >
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 200px">
+                POST /otp/mail/register
+              </div>
+              <span
+                style="
+                  font-family: var(--font-body);
+                  font-size: 12.5px;
+                  color: var(--color-muted);
+                "
+                >to, otp, timestamp, signature</span
+              >
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 200px">
+                requestLogger
+              </div>
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 200px">rateLimiter</div>
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 200px">
+                signatureValidator
+              </div>
+              <span
+                style="
+                  font-family: var(--font-body);
+                  font-size: 12.5px;
+                  color: var(--color-muted);
+                "
+                >Validates payload, freshness, and HMAC</span
+              >
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 200px">
+                Render HTML template
+              </div>
+              <span
+                style="
+                  font-family: var(--font-body);
+                  font-size: 12.5px;
+                  color: var(--color-muted);
+                "
+                >Inject OTP into selected template</span
+              >
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node" style="min-width: 200px">
+                Nodemailer → SMTP
+              </div>
+              <span
+                style="
+                  font-family: var(--font-body);
+                  font-size: 12.5px;
+                  color: var(--color-muted);
+                "
+                >Dispatch to provider</span
+              >
+            </div>
+            <div class="flow-connector">↓</div>
+            <div class="flow-row">
+              <div class="flow-node controller" style="min-width: 200px">
+                200 Mail sent successfully
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- LOGGING -->
+        <div class="section" id="logging">
+          <h2>Logging &amp; Observability</h2>
+          <p style="margin-top: 14px">
+            <code>utils/logger.ts</code> configures Winston. Development logs
+            are human-readable. Production logs use structured JSON formatting
+            suited for log aggregation tools.
+          </p>
+
+          <h3>Winston transports</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Transport</th>
+                  <th>Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Console</td>
+                  <td>Local and runtime visibility.</td>
+                </tr>
+                <tr>
+                  <td>logs/error-%DATE%.log</td>
+                  <td>Daily rotating error logs.</td>
+                </tr>
+                <tr>
+                  <td>logs/combined-%DATE%.log</td>
+                  <td>Daily rotating combined logs.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Request log fields</h3>
+          <p><code>middlewares/requestLogger.ts</code> captures:</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>timestamp</td>
+                  <td>ISO request completion time.</td>
+                </tr>
+                <tr>
+                  <td>ip</td>
+                  <td>Client IP or forwarded IP in production.</td>
+                </tr>
+                <tr>
+                  <td>method</td>
+                  <td>HTTP method.</td>
+                </tr>
+                <tr>
+                  <td>status</td>
+                  <td>Response status code.</td>
+                </tr>
+                <tr>
+                  <td>duration</td>
+                  <td>Request duration in milliseconds.</td>
+                </tr>
+                <tr>
+                  <td>url</td>
+                  <td>Requested path.</td>
+                </tr>
+                <tr>
+                  <td>userAgent</td>
+                  <td>Caller user agent.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <hr />
+
+        <!-- ERROR HANDLING -->
+        <div class="section" id="errors">
+          <h2>Error Handling</h2>
+          <p style="margin-top: 14px">
+            <code>utils/APIError.ts</code> defines a custom error type with an
+            HTTP status code.
+            <code>middlewares/errorHandler.ts</code> centralizes JSON error
+            responses.
+          </p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Error source</th>
+                  <th>Behavior</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>APIError</td>
+                  <td>Uses the provided status code and message.</td>
+                </tr>
+                <tr>
+                  <td>Unknown error</td>
+                  <td>
+                    Returns <code>500</code>; hides stack traces in production.
+                  </td>
+                </tr>
+                <tr>
+                  <td>SMTP failure</td>
+                  <td>Controller returns <code>Failed to send OTP</code>.</td>
+                </tr>
+                <tr>
+                  <td>Unknown route</td>
+                  <td>App returns <code>404 Route not found</code>.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>Example error response:</p>
+          <pre><code>{
+  "success": false,
+  "message": "Invalid signature"
+}</code></pre>
+        </div>
+
+        <hr />
+
+        <!-- PRODUCTION HARDENING -->
+        <div class="section" id="hardening">
+          <h2>Recommended Production Hardening</h2>
+          <ul style="margin-top: 14px">
+            <li>
+              Apply <code>signatureValidator</code> directly to both OTP routes.
+            </li>
+            <li>
+              Keep <code>SIGNATURE_SECRET</code> at least 32 random bytes.
+            </li>
+            <li>
+              Rotate the shared secret periodically and coordinate rotation with
+              OneAuth.
+            </li>
+            <li>Avoid default or weak values in production.</li>
+            <li>
+              Add request body validation for email format and OTP format if
+              upstream guarantees are not sufficient.
+            </li>
+            <li>
+              Keep rate limits strict because OTP email endpoints are high-abuse
+              targets.
+            </li>
+            <li>
+              Use provider-specific app passwords or API keys rather than
+              personal mailbox passwords.
+            </li>
+            <li>Use HTTPS in front of the service.</li>
+            <li>
+              Monitor <code>429</code>, <code>401</code>, and
+              <code>500</code> rates for abuse signals.
+            </li>
+            <li>Centralize logs using a log aggregation tool in production.</li>
+          </ul>
+        </div>
+      </div>
+      <!-- /content -->
+    </div>
+    <!-- /main -->
+
+    <footer>
+      <p>
+        <strong>OneMail API</strong> — Secure OTP delivery and mail templating
+        microservice for the OneAuth ecosystem.
+      </p>
+    </footer>
+  </body>
+</html>

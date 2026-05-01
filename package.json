@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "dev": "node --loader ts-node/esm server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
   "dependencies": {
     "@types/nodemailer": "^7.0.4",
     "crypto": "^1.0.1",

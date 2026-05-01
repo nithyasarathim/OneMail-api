@@ -17,7 +17,7 @@ const rateLimiter = rateLimit({
   keyGenerator: (req: Request) => {
     return isProduction
       ? (req.headers["x-forwarded-for"] as string) || req.ip || "unknown"
-      : ipKeyGenerator(req, {} as any) || "dev-ip";
+      : ipKeyGenerator(req.ip || "dev-ip");
   },
   handler: (req: Request, res: Response, next: NextFunction) => {
     logger.warn(`Rate limit exceeded for IP: ${req.ip}`, {
