@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import APIError from "../utils/APIError.js";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import signatureGenerator from "../utils/signatureGenerator.js";
 import config from "../config/env.js";
 
