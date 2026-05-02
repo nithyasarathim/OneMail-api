@@ -11,7 +11,7 @@ port: Number(process.env.MAIL_PORT),
 user: process.env.MAIL_USER,
 pass: process.env.MAIL_PASS,
 },
-signaturesecret: isProduction ? process.env.SIGNATURE_SECRET : 'dev_secret_key',
+signaturesecret: process.env.SIGNATURE_SECRET || (isProduction ? undefined : 'dev_secret_key'),
 ratelimit: Number(process.env.RATE_LIMIT) || (isProduction ? 100 : 10),
 ratelimitwindow: Number(process.env.RATE_LIMIT_WINDOW) || 60000,
 environment: process.env.ENVIRONMENT || 'development'

@@ -1,0 +1,88 @@
+2026-05-02 07:26:58 [[31merror[39m]: API Error: Invalid signature
+    at signatureValidator (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\middlewares\signatureValidator.ts:71:17)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:295:15
+    at processParams (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:582:12)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:186:3)
+2026-05-02 07:29:11 [[31merror[39m]: API Error: Invalid signature
+    at signatureValidator (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\middlewares\signatureValidator.ts:71:17)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:295:15
+    at processParams (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:582:12)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:186:3)
+2026-05-02 07:29:32 [[31merror[39m]: API Error: Invalid signature
+    at signatureValidator (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\middlewares\signatureValidator.ts:71:17)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:295:15
+    at processParams (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:582:12)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:186:3)
+2026-05-02 07:31:08 [[31merror[39m]: API Error: Invalid signature
+    at signatureValidator (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\middlewares\signatureValidator.ts:71:17)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:295:15
+    at processParams (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:582:12)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:186:3)
+2026-05-02 07:37:11 [[31merror[39m]: API Error: Invalid signature
+    at signatureValidator (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\middlewares\signatureValidator.ts:71:17)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:295:15
+    at processParams (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:582:12)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:186:3)
+2026-05-02 07:39:47 [[31merror[39m]: API Error: Invalid signature
+    at signatureValidator (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\middlewares\signatureValidator.ts:71:17)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:295:15
+    at processParams (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:582:12)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:186:3)
+2026-05-02 07:42:22 [[31merror[39m]: API Error: Invalid signature
+    at signatureValidator (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\middlewares\signatureValidator.ts:71:17)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:295:15
+    at processParams (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:582:12)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:186:3)
+2026-05-02 07:46:10 [[31merror[39m]: API Error: Invalid signature
+    at signatureValidator (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\middlewares\signatureValidator.ts:67:17)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\lib\layer.js:152:17)
+    at C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:295:15
+    at processParams (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:582:12)
+    at next (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:291:5)
+    at Function.handle (C:\Users\NITHYASARATHI\OneDrive\Desktop\OneSoftwares\OneMail\node_modules\router\index.js:186:3)
